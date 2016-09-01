@@ -1,5 +1,5 @@
 # triplew
-A triplesec wrapper (bash) for encrypting/decrypting files.
+A [triplesec](https://keybase.io/triplesec/) wrapper (bash) for encrypting/decrypting files.
 <pre>
 ___________      .__       .__           _________
 \__    ___/______|__|_____ |  |   ____  /   _____/ ____   ____
