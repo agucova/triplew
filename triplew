@@ -8,14 +8,12 @@ COL_RESET=$ESC_SEQ"39;49;00m"
 COL_RED=$ESC_SEQ"31;01m"
 COL_GREEN=$ESC_SEQ"32;01m"
 COL_YELLOW=$ESC_SEQ"33;01m"
-COL_BLUE=$ESC_SEQ"34;01m"
-COL_MAGENTA=$ESC_SEQ"35;01m"
 COL_CYAN=$ESC_SEQ"36;01m"
 
 MODE=$1
 KEY=$2
 FILE=$3
-BASE=$(basename $FILE .triple)
+BASE=$(basename "$FILE" .triple)
 EXT=$(echo "$FILE"|awk -F . '{print $NF}')
 cat << "EOF"
 ___________      .__       .__           _________
@@ -38,7 +36,6 @@ function _spinner() {
 
     local on_success="DONE"
     local on_fail="FAIL"
-    local white="\e[1;37m"
     local green="\e[1;32m"
     local red="\e[1;31m"
     local nc="\e[0m"
@@ -48,7 +45,7 @@ function _spinner() {
             # calculate the column where spinner and status msg will be displayed
             let column=$(tput cols)-${#2}-8
             # display message and position the cursor in $column column
-            echo -ne ${2}
+            echo -ne "${2}"
             printf "%${column}s"
 
             # start spinner
@@ -59,7 +56,7 @@ function _spinner() {
             while :
             do
                 printf "\b${sp:i++%${#sp}:1}"
-                sleep $delay
+                sleep "$delay"
             done
             ;;
         stop)
@@ -68,7 +65,7 @@ function _spinner() {
                 exit 1
             fi
 
-            kill $3 > /dev/null 2>&1
+            kill "$3" > /dev/null 2>&1
 
             # inform the user uppon success or failure
             echo -en "\b["
@@ -96,7 +93,7 @@ function start_spinner {
 
 function stop_spinner {
     # $1 : command exit status
-    _spinner "stop" $1 $_sp_pid
+    _spinner "stop" "$1" $_sp_pid
     unset _sp_pid
 }
 
@@ -104,7 +101,7 @@ function encrypt
 {
     start_spinner Encrypting file, please wait...
     ENCFILE="$FILE.triple"
-    cat $FILE | triplesec -b enc -k $KEY > $ENCFILE
+    cat "$FILE" | triplesec -b enc -k $KEY > $ENCFILE
     stop_spinner $?
     echo -e "${COL_GREEN}Your encrypted file has been saved to ${COL_CYAN}$FILE.triple $COL_RESET"
 }
@@ -113,7 +110,7 @@ function decrypt
     if [ "$EXT" == "triple" ];
     then
       start_spinner Decrypting file, please wait...
-      cat $FILE | triplesec -b dec -k $KEY > $BASE
+      cat "$FILE" | triplesec -b dec -k "$KEY" > "$BASE"
       stop_spinner $?
       echo -e "${COL_GREEN}Your decrypted file has been saved to ${COL_CYAN}$BASE. $COL_RESET"
     else
